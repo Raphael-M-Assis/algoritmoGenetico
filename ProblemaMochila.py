@@ -138,6 +138,13 @@ class ProblemaMochila:
                 else:
                     filho1.append(pai2[x])
                     filho2.append(pai1[x])
+            
+            #Apenas utilizado para demonstrar o funcionamento
+            # print('Numero Sorteado', numeroSorteado)
+            # print('Pai 1:', pai1)
+            # print('Pai 2:', pai2)
+            # print('Filho 1:', filho1)
+            # print('Filho 2:', filho2)
 
             individuos.append(self.criaIndividuo(filho1, individuos, proximaGeracao ))
             individuos.append(self.criaIndividuo(filho2, individuos, proximaGeracao ))
