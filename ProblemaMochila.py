@@ -112,21 +112,19 @@ class ProblemaMochila:
 
         for x in range(self.numeroGenes):
             genes[x].setSelecionado(filho[x])
+        
+        indice = len(individuos) % self.numeroGenes 
 
-        # for x in range(len(genes)):
-        #     print('Gene', genes[x].valor, 'Selecionado:', genes[x].selecionado)
-    
-        individuo = Individuo(len(individuos), genes, proximaGeracao)
+        individuo = Individuo(indice, genes, proximaGeracao)
 
         return individuo
 
     
-    def realizaReproducao(self, pares, individuos):
+    def realizaReproducao(self, pares, individuos, proximaGeracao):
         pai1 = []
         pai2 = []
         filho1 = []
         filho2 = []
-        proximaGeracao = pares[0][0].geracao + 1        
 
         for x in range(self.numeroIndividuos // 2):
             numeroSorteado = random.randint(0, self.numeroGenes - 1)
@@ -141,8 +139,8 @@ class ProblemaMochila:
                     filho1.append(pai2[x])
                     filho2.append(pai1[x])
 
-            individuos.append(self.criaIndividuo(filho1, individuos, proximaGeracao))
-            individuos.append(self.criaIndividuo(filho2, individuos, proximaGeracao))
+            individuos.append(self.criaIndividuo(filho1, individuos, proximaGeracao ))
+            individuos.append(self.criaIndividuo(filho2, individuos, proximaGeracao ))
 
             filho1 = []
             filho2 = []
@@ -184,21 +182,23 @@ class ProblemaMochila:
 
     def realizaAjustePopulacional(self, individuos):
         x = 0
-        
         individuos = sorted(individuos, key=lambda ind: ind.getFitness(), reverse=True)
 
         while len(individuos) > self.numeroIndividuos:
+            if x >= len(individuos):
+                break
 
             if individuos[x].getPeso() > self.capacidadeMochila and len(individuos) > self.numeroIndividuos:
                 print('Individuo', individuos[x].getPeso(), 'sera removido da populacao')
                 individuos.remove(individuos[x])
-                x += 1
+            else:
+                # Remover os individuos com menor fitness
+                individuos.pop()
 
-            # Remover os individuos com menor fitness
-            individuos.pop()
             x += 1
 
         return individuos
+
 
     
 
@@ -210,7 +210,6 @@ class ProblemaMochila:
 
         random.seed()
         individuos = []
-        condicaoParada = self.condicaoParada - 1  # Isso acontece porque a primeira geração já é gerada automaticamente
 
         individuos = self.geraPrimeiraGeracao()
 
@@ -220,11 +219,21 @@ class ProblemaMochila:
 
         # Ordena os elementos da primeira geração
         individuos = sorted(individuos, key=lambda ind: ind.getFitness(), reverse=True)
-        individuosSorteados = individuos.copy()
 
 
         print('Calculando o Fitness Total da Primeira Geracao')
-
+            
+        for proximaGeracao in range(self.condicaoParada):
+            individuos = self.repetePassos(individuos, proximaGeracao + 2)
+            
+        
+    def repetePassos(self, individuos, proximaGeracao):
+        if proximaGeracao > self.condicaoParada:
+            return 
+        
+        individuosSorteados = individuos.copy()
+        
+        
         fitnessTotal = self.calculaFitnessTotal(individuosSorteados)
         self.calculaProbabilidade(individuosSorteados, fitnessTotal)
         
@@ -234,16 +243,15 @@ class ProblemaMochila:
             print('Solucao Final:', individuos[x].getSolucaoFinal())
             print('Probabilidade:', individuos[x].getProbabilidade())
             print()
-
-
+                
         pares = self.geraPares(individuosSorteados)
 
         print('\nGerando Pares:')
         for x in range(len(pares)):
             print('Par:', pares[x][0].id, pares[x][0].geracao, 'e', pares[x][1].id, pares[x][1].geracao)
 
-        individuos = self.realizaReproducao(pares, individuos)
-
+        individuos = self.realizaReproducao(pares, individuos, proximaGeracao)
+        
         print('\nDepois da reproducao')
         for x in range(len(individuos)):
             individuos[x].adicionaSolucaoFinal()
@@ -255,8 +263,9 @@ class ProblemaMochila:
         for x in range(len(individuos)):
             individuos = sorted(individuos, key=lambda ind: ind.getFitness(), reverse=True)
             print(individuos[x].id, individuos[x].geracao, 'Fitness', individuos[x].getFitness())
-
-
+            
+        return individuos
+            
 
 problema = ProblemaMochila(8, 8, 0.05, 5000, 8)
 problema.inicializa()
