@@ -248,6 +248,7 @@ class ProblemaMochila:
             for individuo in individuos:
                 print('\nx:', individuo.id, individuo.geracao)
                 print('Fitness:', individuo.getFitness())
+                print('Peso', individuo.getPeso())
                 print('Solucao Final:', individuo.getSolucaoFinal())
             return 
         
