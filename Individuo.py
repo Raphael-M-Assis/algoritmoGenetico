@@ -5,6 +5,7 @@ class Individuo:
         self.solucaoFinal = [0] * len(solucaoParcial)
         self.geracao = geracao
         self.fitness = 0
+        self.pesoTotal = 0
         self.probabilidade = 0
 
     def calculaLucro(self, solucaoParcial):
@@ -18,6 +19,17 @@ class Individuo:
         print(" [ ",self.fitness, " De Valor Fitness!  ] --- x: ", self.id, self.geracao)
         return self.fitness
     
+    def calculaPeso(self, solucaoParcial):
+        if self.pesoTotal > 0:
+            self.pesoTotal = 0
+
+        for gene in solucaoParcial:
+            if gene.getSelecionado() == 1:
+                self.pesoTotal += gene.getPeso()
+        
+        print(" [ ",self.pesoTotal, " De Peso!  ] --- x: ", self.id, self.geracao)
+        return self.pesoTotal
+    
     def mutacao(self, geneSorteado):
         
         if self.solucaoParcial[geneSorteado].getSelecionado() == 1:
@@ -26,6 +38,8 @@ class Individuo:
             self.solucaoParcial[geneSorteado].setSelecionado(1)
 
         self.adicionaSolucaoFinal()
+        self.calculaLucro(self.solucaoParcial)
+        self.calculaPeso(self.solucaoParcial)
             
 
     def adicionaSolucaoFinal(self):
@@ -38,10 +52,14 @@ class Individuo:
                 self.solucaoFinal[i] = 0
         
         self.calculaLucro(self.solucaoParcial)
+        self.calculaPeso(self.solucaoParcial)
 
         
     def getFitness(self):
         return self.fitness
+    
+    def getPeso(self):
+        return self.pesoTotal
 
     def getSolucaoFinal(self):
         return self.solucaoFinal

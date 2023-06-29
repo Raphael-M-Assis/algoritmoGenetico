@@ -182,6 +182,26 @@ class ProblemaMochila:
         return individuosSorteados
     
 
+    def realizaAjustePopulacional(self, individuos):
+        x = 0
+        
+        individuos = sorted(individuos, key=lambda ind: ind.getFitness(), reverse=True)
+
+        while len(individuos) > self.numeroIndividuos:
+
+            if individuos[x].getPeso() > self.capacidadeMochila and len(individuos) > self.numeroIndividuos:
+                print('Individuo', individuos[x].getPeso(), 'sera removido da populacao')
+                individuos.remove(individuos[x])
+                x += 1
+
+            # Remover os individuos com menor fitness
+            individuos.pop()
+            x += 1
+
+        return individuos
+
+    
+
 
     def inicializa(self):
 
@@ -228,13 +248,13 @@ class ProblemaMochila:
         for x in range(len(individuos)):
             individuos[x].adicionaSolucaoFinal()
 
-        individuosSorteados = self.realizaMutacao(individuos)
+        individuos = self.realizaMutacao(individuos)
+        individuos = self.realizaAjustePopulacional(individuos)
 
-        # print('\nDepois da mutacao')
-        # for x in range(len(individuosSorteados)):
-        #     print(individuosSorteados[x].id, individuosSorteados[x].geracao, 'Probabilidade:', individuosSorteados[x].getProbabilidade(), 'Fitness', individuosSorteados[x].getFitness())
-
-        
+        print('\n\nAjuste Populacional')
+        for x in range(len(individuos)):
+            individuos = sorted(individuos, key=lambda ind: ind.getFitness(), reverse=True)
+            print(individuos[x].id, individuos[x].geracao, 'Fitness', individuos[x].getFitness())
 
 
 
