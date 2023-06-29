@@ -16,7 +16,7 @@ class Individuo:
             if gene.getSelecionado() == 1:
                 self.fitness += gene.getValor()
         
-        print(" [ ",self.fitness, " De Valor Fitness!  ] --- x: ", self.id, self.geracao)
+        # print(" [ ",self.fitness, " De Valor Fitness!  ] --- x: ", self.id, self.geracao)
         return self.fitness
     
     def calculaPeso(self, solucaoParcial):
@@ -27,7 +27,7 @@ class Individuo:
             if gene.getSelecionado() == 1:
                 self.pesoTotal += gene.getPeso()
         
-        print(" [ ",self.pesoTotal, " De Peso!  ] --- x: ", self.id, self.geracao)
+        # print(" [ ",self.pesoTotal, " De Peso!  ] --- x: ", self.id, self.geracao)
         return self.pesoTotal
     
     def mutacao(self, geneSorteado):

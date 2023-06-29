@@ -113,7 +113,7 @@ class ProblemaMochila:
         for x in range(self.numeroGenes):
             genes[x].setSelecionado(filho[x])
         
-        indice = len(individuos) % self.numeroGenes 
+        indice = len(individuos) % self.numeroIndividuos
 
         individuo = Individuo(indice, genes, proximaGeracao)
 
@@ -172,10 +172,16 @@ class ProblemaMochila:
 
         if individuoSorteado:
             sorteioGene = random.randint(0, self.numeroGenes - 1)
-            print('Gene', sorteioGene, 'do individuo', individuoSorteado.id, 'sera mutado')
+            print('Gene', sorteioGene, 'do individuo', individuoSorteado.id, individuoSorteado.geracao, 'sera mutado')
+            print('\nAntes da mutacao')
+            print('x:', individuoSorteado.id, individuoSorteado.geracao, 'Fitness', individuoSorteado.getFitness(), 'Solucao: ', individuoSorteado.getSolucaoFinal())
             
             individuoSorteado.mutacao(sorteioGene)
             individuosSorteados.append(individuoSorteado)
+            
+            print('\nDepois da mutacao')
+            print('x:', individuoSorteado.id, individuoSorteado.geracao, 'Fitness', individuoSorteado.getFitness(), 'Solucao: ', individuoSorteado.getSolucaoFinal())
+
 
         return individuosSorteados
     
@@ -229,6 +235,13 @@ class ProblemaMochila:
         
     def repetePassos(self, individuos, proximaGeracao):
         if proximaGeracao > self.condicaoParada:
+            
+            print('\nCondicao de parada atingida')
+            
+            for individuo in individuos:
+                print('\nx:', individuo.id, individuo.geracao)
+                print('Fitness:', individuo.getFitness())
+                print('Solucao Final:', individuo.getSolucaoFinal())
             return 
         
         individuosSorteados = individuos.copy()
